@@ -12,3 +12,9 @@ def relu(x):
 
 def relu_derivative(x):
     return (x > 0).astype(float)
+
+def tanh(x):
+    return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+
+def tanh_derivative(x):
+    return 1 - tanh(x)**2

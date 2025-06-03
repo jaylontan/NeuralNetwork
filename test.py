@@ -31,20 +31,21 @@ y = np.array([
     0
 ])
 
-n = 1000  # Number of runs
+n = 10  # Number of runs
 accuracies = []
 
 for i in range(n):
     # Reinitialize and train a new model each time
     nn = MyNeuralNetwork()
-    nn.Linear(2, 3)
+    nn.Linear(2, 3, 'he')
     nn.ReLU()
-    nn.Linear(3, 6)
+    nn.Linear(3, 6, 'he')
     nn.ReLU()
-    nn.Linear(6, 1)
+    nn.Linear(6, 1, 'he')
     nn.Sigmoid()
     
-    nn.train(X, y, num_of_epochs=10000)
+    # nn.train_mini_batch(X, y, num_of_epochs=10000, learning_rate=0.01, batch_size=2)
+    nn.train(X, y, num_of_epochs=10000, learning_rate=0.01)
 
     # Evaluate accuracy
     y_pred = nn.forward(X)
