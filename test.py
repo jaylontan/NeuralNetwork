@@ -31,7 +31,7 @@ y = np.array([
     0
 ])
 
-n = 10  # Number of runs
+n = 100  # Number of runs
 accuracies = []
 
 for i in range(n):
@@ -44,7 +44,7 @@ for i in range(n):
     nn.Linear(6, 1, 'he')
     nn.Sigmoid()
     
-    # nn.train_mini_batch(X, y, num_of_epochs=10000, learning_rate=0.01, batch_size=2)
+    # nn.train_mini_batch(X, y, num_of_epochs=10000, learning_rate=0.001, batch_size=5)
     nn.train(X, y, num_of_epochs=10000, learning_rate=0.01)
 
     # Evaluate accuracy
@@ -57,3 +57,4 @@ for i in range(n):
 avg_acc = np.mean(accuracies)
 print(f"\nAverage Accuracy over {n} runs: {avg_acc * 100:.2f}%")
 
+# Add L2 Regularization

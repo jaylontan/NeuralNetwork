@@ -108,18 +108,6 @@ class MyNeuralNetwork:
         return grads_W, grads_b
     
     def train(self, X, y, num_of_epochs, learning_rate):
-        """
-        Train the neural network using batch gradient descent.
-
-        Parameters:
-        - X (np.ndarray): Input data of shape (num_samples, num_features)
-        - y (np.ndarray): Labels of shape (num_samples,)
-        - num_of_epochs (int): Number of training iterations
-        - learning_rate (float): Step size for updating weights and biases
-
-        Returns:
-        - np.ndarray: Final network output after training
-        """
         for n in range(num_of_epochs):
             self.forward(X)
             grads_W, grads_b = self.backward(X, y)
@@ -131,19 +119,6 @@ class MyNeuralNetwork:
         return self.forward(X)
     
     def train_mini_batch(self, X, y, num_of_epochs, learning_rate, batch_size):
-        """
-        Train the neural network using mini-batch gradient descent.
-
-        Parameters:
-        - X (np.ndarray): Input data of shape (num_samples, num_features)
-        - y (np.ndarray): Labels of shape (num_samples,)
-        - num_of_epochs (int): Number of training iterations
-        - learning_rate (float): Step size for updating weights and biases
-        - batch_size (int): Number of samples selected per batch
-
-        Returns:
-        - np.ndarray: Final network output after training
-        """
         for n in range(num_of_epochs):
             permutation = np.random.permutation(X.shape[0])
             X_shuffled = X[permutation]
@@ -160,5 +135,5 @@ class MyNeuralNetwork:
                     self.weights[j] -= learning_rate * grads_W[j]
                     self.bias[j] -= learning_rate * grads_b[j]
             
-            return self.forward(X)
+        return self.forward(X)
 
