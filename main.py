@@ -107,12 +107,13 @@ class MyNeuralNetwork:
         
         return grads_W, grads_b
     
-    def train(self, X, y, num_of_epochs, learning_rate):
+    def train(self, X, y, num_of_epochs, learning_rate, lambda_l=0):
         for n in range(num_of_epochs):
             self.forward(X)
             grads_W, grads_b = self.backward(X, y)
             
             for i in reversed(range(len(self.weights))):
+                grads_W[i] += (lambda_l / X.shape[0]) * self.weights[i] # L2 Regularization
                 self.weights[i] -= learning_rate * grads_W[i]
                 self.bias[i] -= learning_rate * grads_b[i]
 
@@ -132,6 +133,7 @@ class MyNeuralNetwork:
                 grads_W, grads_b = self.backward(X_batch, y_batch)
 
                 for j in reversed(range(len(self.weights))):
+                    grads_W[i] += (lambda_l / X.shape[0]) * self.weights[i] # L2 Regularization
                     self.weights[j] -= learning_rate * grads_W[j]
                     self.bias[j] -= learning_rate * grads_b[j]
             
