@@ -11,3 +11,4 @@ venv/
 
 #Ignore test files
 tests/
+test.py
