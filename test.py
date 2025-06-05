@@ -35,7 +35,7 @@ y = np.array([
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=42)
 
-n = 100  # Number of runs
+n = 10  # Number of runs
 accuracies = []
 
 for i in range(n):
@@ -48,8 +48,9 @@ for i in range(n):
     nn.Linear(6, 1, 'he')
     nn.Sigmoid()
     
-    nn.train_mini_batch(X, y, num_of_epochs=10000, learning_rate=0.1, batch_size=3, lambda_l=0.01, threshold=10000)
+    # nn.train_mini_batch(X, y, num_of_epochs=10000, learning_rate=0.1, batch_size=3, lambda_l=0.01, threshold=10000)
     ## nn.train(X_train, y_train, num_of_epochs=10000, learning_rate=0.01, lambda_l=0.01, threshold=15)
+    nn.train_stochastic(X_train, y_train, num_of_epochs=10000, learning_rate=0.01, lambda_l=0.01,threshold=1000)
 
     # Evaluate accuracy
     y_pred = nn.forward(X_test)
