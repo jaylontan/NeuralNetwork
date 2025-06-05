@@ -215,3 +215,57 @@ class MyNeuralNetwork:
                     break
             
         return self.forward(X)
+    
+    def train_stochastic(self, X, y, num_of_epochs, learning_rate, lambda_l=0, threshold=10):
+        # Create training and validation sets
+        indices = np.arange(X.shape[0])
+        np.random.shuffle(indices)
+
+        X = X[indices]
+        y = y[indices]
+
+        split = int(0.8 * X.shape[0])
+        X_train, X_validation = X[:split], X[split:]
+        y_train, y_validation = y[:split], y[split:]
+
+        best_weights = [w.copy() for w in self.weights]
+        best_biases = [b.copy() for b in self.bias]
+        best_loss = float('inf')
+        epochs_without_improvement = 0
+
+        for n in range(num_of_epochs):
+            permutation = np.random.permutation(X_train.shape[0])
+            X_shuffled = X_train[permutation]
+            y_shuffled = y_train[permutation]
+
+            for i in range(X_train.shape[0]):
+                X_i = X_shuffled[i].reshape(1, -1)
+                y_i = y_shuffled[i].reshape(1, 1)
+
+                self.forward(X_i)
+                grads_W, grads_b = self.backward(X_i, y_i)
+
+                for j in reversed(range(len(self.weights))):
+                    grads_W[j] += (lambda_l / X_train.shape[0]) * self.weights[j] # L2 Regularization
+                    self.weights[j] -= learning_rate * grads_W[j]
+                    self.bias[j] -= learning_rate * grads_b[j]
+
+            y_pred = self.forward(X_validation)
+            l2_term = 0
+            for w in self.weights:
+                l2_term += np.sum(w ** 2)
+            loss = self.BCE_loss(y_pred, y_validation) + lambda_l / (2 * X_train.shape[0]) * l2_term
+
+            if best_loss > loss:
+                best_weights = [w.copy() for w in self.weights]
+                best_biases = [b.copy() for b in self.bias]
+                best_loss = loss
+                epochs_without_improvement = 0
+            else:
+                epochs_without_improvement += 1
+                if epochs_without_improvement > threshold:
+                    self.weights = best_weights
+                    self.bias = best_biases
+                    break
+
+        return self.forward(X)
