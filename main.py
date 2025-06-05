@@ -112,16 +112,51 @@ class MyNeuralNetwork:
         pred = np.clip(pred, epsilon, 1 - epsilon)  
         return -np.mean(actual * np.log(pred) + (1 - actual) * np.log(1 - pred))
     
-    def train(self, X, y, num_of_epochs, learning_rate, lambda_l=0):
+    def train(self, X, y, num_of_epochs, learning_rate, lambda_l=0, threshold=10):
+        # Create training and validation sets
+        indices = np.arange(X.shape[0])
+        np.random.shuffle(indices)
+
+        X = X[indices]
+        y = y[indices]
+
+        split = int(0.8 * X.shape[0])
+        X_train, X_validation = X[:split], X[split:]
+        y_train, y_validation = y[:split], y[split:]
+
+        best_weights = [w.copy() for w in self.weights]
+        best_biases = [b.copy() for b in self.bias]
+        best_loss = float('inf')
+        epochs_without_improvement = 0
+
         for n in range(num_of_epochs):
-            self.forward(X)
-            grads_W, grads_b = self.backward(X, y)
+            self.forward(X_train)
+            grads_W, grads_b = self.backward(X_train, y_train)
             
             for i in reversed(range(len(self.weights))):
-                grads_W[i] += (lambda_l / X.shape[0]) * self.weights[i] # L2 Regularization
+                grads_W[i] += (lambda_l / X_train.shape[0]) * self.weights[i] # L2 Regularization
                 self.weights[i] -= learning_rate * grads_W[i]
                 self.bias[i] -= learning_rate * grads_b[i]
 
+            y_pred = self.forward(X_validation)
+            l2_term = 0
+            for w in self.weights:
+                l2_term += np.sum(w ** 2)
+            loss = self.BCE_loss(y_pred, y_validation) + lambda_l / (2 * X.shape[0]) * l2_term
+
+            if best_loss > loss:
+                best_weights = [w.copy() for w in self.weights]
+                best_biases = [b.copy() for b in self.bias]
+                best_loss = loss
+                epochs_without_improvement = 0
+            else:
+                epochs_without_improvement += 1
+                if epochs_without_improvement > threshold:
+                    print(f"Early stopping at Epoch {n}")
+                    self.weights = best_weights
+                    self.bias = best_biases
+                    break
+                
         return self.forward(X)
     
     def train_mini_batch(self, X, y, num_of_epochs, learning_rate, batch_size, lambda_l=0.01, 
