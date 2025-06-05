@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from activations import *
-from main import MyNeuralNetwork
+from main import NeuralNetwork
 
 X = np.array([
     [150, 70], 
@@ -40,7 +40,7 @@ accuracies = []
 
 for i in range(n):
     # Reinitialize and train a new model each time
-    nn = MyNeuralNetwork()
+    nn = NeuralNetwork()
     nn.Linear(2, 3, 'he')
     nn.ReLU()
     nn.Linear(3, 6, 'he')

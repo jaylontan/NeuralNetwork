@@ -71,7 +71,6 @@ class NeuralNetwork:
             
         return A
     
-    
     def backward(self, X, y):
         y = y.reshape(-1, 1)
         m = X.shape[0]
