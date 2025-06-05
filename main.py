@@ -1,7 +1,7 @@
 import numpy as np
 from activations import *
 
-class MyNeuralNetwork:
+class NeuralNetwork:
     def __init__(self):
         self.layers = []
 
